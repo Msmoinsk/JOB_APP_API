@@ -136,3 +136,57 @@ res.status(StatusCodes.CREATED).json({
     token
 })
 ```
+
+5. Validation Error
+```javascript
+{
+    "err": {
+        "errors": {
+            "createdBy": {
+                "name": "ValidatorError",
+                "message": "Please give a User",
+                "properties": {
+                    "message": "Please give a User",
+                    "type": "required",
+                    "path": "createdBy"
+                },
+                "kind": "required",
+                "path": "createdBy"
+            }
+        },
+        "_message": "Job validation failed",
+        "name": "ValidationError",
+        "message": "Job validation failed: createdBy: Please give a User"
+    }
+}
+// explain thsi error and from where it is coming from
+```
+
+This error message indicates a validation failure when attempting to save or process a "Job" object. Here’s a breakdown of the error and its components:
+
+1. **Error Type**: `ValidationError`
+   - This is a type of error commonly used in applications to signify that data does not meet the expected validation criteria.
+
+2. **Error Message**: `"Job validation failed: createdBy: Please give a User"`
+   - This message indicates that the validation for a field named `createdBy` within the `Job` object has failed. Specifically, the validation expects this field to contain a reference or information about a `User`, but it appears to be missing or invalid.
+
+3. **Details of the Error**:
+   - **`errors.createdBy.name`**: `"ValidatorError"`
+     - This specifies the type of error encountered, which is a validation error in this case.
+   - **`errors.createdBy.message`**: `"Please give a User"`
+     - This is a more detailed message indicating what went wrong with the validation of the `createdBy` field.
+   - **`errors.createdBy.properties.type`**: `"required"`
+     - Indicates that the field `createdBy` is required and must be provided.
+   - **`errors.createdBy.properties.path`**: `"createdBy"`
+     - Specifies the path within the data structure (in this case, the `Job` object) where the error occurred.
+   - **`errors.createdBy.kind`**: `"required"`
+     - Further specifies that the error is due to the field being required.
+
+4. **Overall Error Message**: `"Job validation failed"`
+   - This is a summary indicating that the validation process for the entire `Job` object failed, with the specific issue being related to the `createdBy` field.
+
+**Where is this coming from?**
+
+This error is likely originating from a backend application or API that handles the creation or updating of `Job` objects. Many modern applications use validation frameworks or libraries that enforce rules on data before it is saved to a database or processed further. In this case, the application expects that every `Job` object must have a valid `createdBy` field, which references a `User`. If this requirement is not met (i.e., the `createdBy` field is missing or incorrectly formatted), the validation fails, resulting in the `ValidationError` being thrown.
+
+To resolve this issue, you would typically need to ensure that whenever a `Job` object is created or updated, the `createdBy` field is correctly populated with a valid `User` reference or identifier according to the application's requirements and schema. This might involve checking the frontend or backend code responsible for handling `Job` object submissions to ensure that the `createdBy` field is correctly included and validated before attempting to save the `Job` object.
