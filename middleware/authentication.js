@@ -12,6 +12,10 @@ const auth = (req, res, next) => {
     const token = authToken.split(" ")[1]
     try{
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        // You can also prefer this below code 
+        // const user = await User.findById( decoded.userID ).select("-password")
+        // // Note that the select("-password") will not send the colomn of password
+        // req.user = user
         req.user = { userId: decoded.userID, name: decoded.userName }
         next()
     }catch(err){
