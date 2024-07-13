@@ -19,7 +19,7 @@ const auth = (req, res, next) => {
         req.user = { userId: decoded.userID, name: decoded.userName }
         next()
     }catch(err){
-        throw new UnauthenticatedError('Their is issue in authenticating')
+        throw new UnauthenticatedError('Their is issue in authorization Token.')
     }
 }
 
