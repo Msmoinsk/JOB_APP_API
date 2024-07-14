@@ -50,10 +50,30 @@ Email Validation Regex
 
 #### Security
 
-- helmet
-- cors
-- xss-clean
-- express-rate-limit
+- helmet  : it sets various http headers to prevent numerous possible attck
+
+- cors : it ensures that are api is accessable from different domain if you dont have came only access the data from same domain
+i -cors are like this:
+  { If cors is not installed }
+  a. you can call api if the frontend is in the sever folder 
+
+  |- serverfolder
+    |- node modules
+    |- frontend App
+
+  { If cors is installed }
+  b. you can have seperate domain(file path of frontend and backend) and api can be accessable
+
+  |- serverFolder
+    |- nodeModules
+      |- nodePackages
+  |- Frontend App
+
+- xss-clean : it sanetizes the user input [ req{body,params,query} ] it protects from cross site scripting attacks
+
+- express-rate-limit : to limit the amount of request a user can make
+
+
 
 Swagger UI
 
@@ -190,3 +210,29 @@ This error message indicates a validation failure when attempting to save or pro
 This error is likely originating from a backend application or API that handles the creation or updating of `Job` objects. Many modern applications use validation frameworks or libraries that enforce rules on data before it is saved to a database or processed further. In this case, the application expects that every `Job` object must have a valid `createdBy` field, which references a `User`. If this requirement is not met (i.e., the `createdBy` field is missing or incorrectly formatted), the validation fails, resulting in the `ValidationError` being thrown.
 
 To resolve this issue, you would typically need to ensure that whenever a `Job` object is created or updated, the `createdBy` field is correctly populated with a valid `User` reference or identifier according to the application's requirements and schema. This might involve checking the frontend or backend code responsible for handling `Job` object submissions to ensure that the `createdBy` field is correctly included and validated before attempting to save the `Job` object.
+
+6. In obj you have objs and you convert them into the array the key will become index
+like this
+```javascript
+let testObj = {
+  err: {
+    err1: { pass:1 },
+    err2: { pass:2 }
+  }
+}
+
+
+// Using the Object.values() you can convert the Object into and Array
+
+let testObjectArray = Object.values(testObj.err)
+console.log(testObjectArray)
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/*
+The Output will be like this :
+[ { pass:1 }, { pass:2 } ]
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+*/
+```
