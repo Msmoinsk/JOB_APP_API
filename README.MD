@@ -236,3 +236,68 @@ The Output will be like this :
 
 */
 ```
+
+7. How load Balancer Proxy will send the client IP to the server With the trust
+
+Certainly! Let's break down the provided code step by step:
+
+```javascript
+app.set('trust proxy', 1);  // This will allow Hureko to send the proxy to our API
+app.use(
+  rateLimiter({
+    windowMs: 15 * 60 * 1000,    // 15 minutes
+    max: 100,   // Limit each Ip to 100 Request per Window
+  })
+);
+```
+
+1. **`app.set('trust proxy', 1);`**: 
+   - This line configures your Express application (`app`) to trust the proxy headers sent by the client. When your application is deployed behind a proxy (like a load balancer or reverse proxy), these headers contain the original client's IP address. By trusting the proxy, Express will use the IP address provided in these headers rather than the direct connection IP, which is often necessary for correctly identifying the client.
+
+2. **`app.use(rateLimiter({...}));`**:
+   - Here, `app.use()` is used to apply middleware to your Express application. Middleware functions are functions that have access to the request object (`req`), the response object (`res`), and the next middleware function in the application’s request-response cycle.
+
+3. **`rateLimiter({...})`**: 
+   - This appears to be a custom middleware function (not part of core Express) that implements rate limiting. Rate limiting restricts the number of requests a client (identified by their IP address) can make to your API within a specified time window (`windowMs`). 
+
+4. **Rate Limiting Options Explained**:
+   - **`windowMs: 15 * 60 * 1000`**: Sets the time window for rate limiting to 15 minutes (converted from milliseconds to minutes).
+   - **`max: 100`**: Specifies that each IP address is allowed to make a maximum of 100 requests within the 15-minute window.
+
+**In Simple Words**:
+- The first line (`app.set('trust proxy', 1);`) tells your Express app to trust information about the client's IP address that might come from a proxy server. This is important if your app runs behind something like a load balancer.
+  
+- The second block (`app.use(rateLimiter({...}))`) sets up a rate limiter middleware. It ensures that each IP address can only send a maximum of 100 requests to your API within every 15-minute period. This helps protect your API from abuse and ensures fair usage by clients.
+
+Together, these settings help manage and secure your Express application by handling proxy headers correctly and implementing a restriction on the number of requests clients can make over time.
+
+<<<<<<< The ultimate Explanations  >>>>>>>
+Sure, let's dive deeper into what `app.set('trust proxy', 1);` does in a Node.js application using Express.
+
+### What does `app.set('trust proxy', 1);` mean?
+
+In Express.js, `app.set()` is used to modify the settings of the application's instance (`app`). Specifically, `app.set('trust proxy', 1);` is used to configure how Express should handle proxy headers.
+
+### Explanation:
+
+1. **Proxy Servers**: When your Node.js application is deployed behind a proxy server (like Nginx, Apache, or a load balancer), the proxy server forwards incoming requests to your application.
+
+2. **Proxy Headers**: Proxy servers often add headers to the incoming requests to provide information about the original client's IP address and other details. These headers include `X-Forwarded-For`, `X-Forwarded-Proto`, and `X-Forwarded-Port`.
+
+3. **Trust Proxy Setting**:
+   - Express.js, by default, does not trust these proxy headers because they can be manipulated by malicious clients.
+   - When you set `app.set('trust proxy', 1);`, you are telling Express to trust the proxy's determination of the client's IP address and other connection-related information.
+   - The value `1` in `app.set('trust proxy', 1);` means that Express will only trust proxy headers when it detects that the request itself is coming from a trusted proxy server (based on the `X-Forwarded-Proto` header).
+
+4. **Why Trust Proxy?**:
+   - Without trusting the proxy, Express would see the IP address of the proxy server instead of the actual client's IP address. This is because the request's source IP address would be that of the proxy server, not the client.
+   - By trusting the proxy and using the headers it provides (`X-Forwarded-For` for client IP, `X-Forwarded-Proto` for protocol, etc.), Express can accurately determine the client's details, which is crucial for logging, security (like rate limiting or access control), and any functionality that requires knowing the client's true IP address.
+
+### Example Scenario:
+- Imagine your Node.js application is hosted on a cloud platform behind a load balancer or a proxy server like Nginx.
+- Requests from clients reach the load balancer/proxy first, which then forwards them to your Node.js application.
+- Without `app.set('trust proxy', 1);`, your application might see all requests coming from the load balancer/proxy's IP address.
+- By setting `app.set('trust proxy', 1);`, Express will look at the headers (`X-Forwarded-For`, etc.) to find out the actual client's IP address as forwarded by the proxy.
+
+### Conclusion:
+`app.set('trust proxy', 1);` is essential for correctly handling requests when your Node.js application is behind a proxy server. It ensures that Express correctly identifies the client's IP address and other connection details from proxy headers, enabling proper functionality and security measures in your application.
