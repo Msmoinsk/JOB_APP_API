@@ -47,6 +47,10 @@ app.use(cors())    // allow frontend from any domain or computer to access the A
 app.use(xss())     // sanatize the req.{body, params, query} from Cross Site Scripting
 
 // routes
+app.get('/', (req, res) => {
+  res.send("Job API App Is working")
+})
+
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/jobs', authorizeUser, jobRouter)
 
